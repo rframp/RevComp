@@ -19,7 +19,7 @@ if uploaded_file:
         # Define the correct column headers manually
         headers = [
             "Driver", "Driver No", "Department", "Jan", "Feb", "Mar", "Apr", "May", 
-            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Notes"
+            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Average", "Notes"
         ]
 
         # Load data with manual headers
@@ -32,12 +32,12 @@ if uploaded_file:
             df['Driver'] = df['Driver'].astype(str)
             df['Driver No'] = pd.to_numeric(df['Driver No'], errors="coerce", downcast="integer")  # Ensure whole number
 
-        # Ensure numeric columns (Jan-Dec) are properly formatted
-        for col in revenue_data.columns[3:15]:  # Jan-Dec columns
+        # Ensure numeric columns (Jan-Dec and Average) are properly formatted
+        for col in revenue_data.columns[3:16]:  # Jan-Dec and Average columns
             revenue_data[col] = pd.to_numeric(revenue_data[col], errors="coerce")
-        for col in job_data.columns[3:15]:
+        for col in job_data.columns[3:16]:
             job_data[col] = pd.to_numeric(job_data[col], errors="coerce", downcast="integer")  # Ensure whole numbers
-        for col in average_data.columns[3:15]:
+        for col in average_data.columns[3:16]:
             average_data[col] = pd.to_numeric(average_data[col], errors="coerce")
 
         # UI layout with filters on the left
@@ -92,7 +92,7 @@ if uploaded_file:
                             data = average_data.loc[average_data['Driver'] == driver]
 
                         if not data.empty:
-                            row.update(data.iloc[0, 3:15].to_dict())  # Add Jan-Dec values to row
+                            row.update(data.iloc[0, 3:].to_dict())  # Add Jan-Dec, Average, and Notes values to row
 
                     row["Notes"] = notes  # Add notes at the end
                     result.append(row)
@@ -118,6 +118,7 @@ if uploaded_file:
                             "Oct": "{:.0f}" if "Job Numbers" in selected_metrics else "{:,.2f}",
                             "Nov": "{:.0f}" if "Job Numbers" in selected_metrics else "{:,.2f}",
                             "Dec": "{:.0f}" if "Job Numbers" in selected_metrics else "{:,.2f}",
+                            "Average": "{:.0f}" if "Job Numbers" in selected_metrics else "{:,.2f}",
                         }
                     ),
                     width=1500,  # Set table width for full month display
